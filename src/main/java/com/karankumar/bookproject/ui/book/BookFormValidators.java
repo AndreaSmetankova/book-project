@@ -26,6 +26,7 @@ public final class BookFormValidators {
     private BookFormValidators() {}
 
     static SerializablePredicate<Integer> isNumberPositive() {
+        // null is allowed since these are optional fields
         return number -> (number == null || number > 0);
     }
 
@@ -34,10 +35,11 @@ public final class BookFormValidators {
     }
 
     static SerializablePredicate<LocalDate> isDateNotInFuture() {
-        return date -> !(date != null && date.isAfter(LocalDate.now()));
+        return date -> (date != null && !date.isAfter(LocalDate.now()));
     }
 
     static SerializablePredicate<Integer> isPagesLessThanOrEqualToMax() {
+        // null is allowed since these are optional fields
         return number -> (number == null || number <= Book.MAX_PAGES);
     }
 

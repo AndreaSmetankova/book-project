@@ -513,7 +513,9 @@ public class BookForm extends VerticalLayout {
 
     private void moveBookToDifferentShelf() {
         PredefinedShelf shelf =
-                predefinedShelfService.findByPredefinedShelfNameAndLoggedInUser(predefinedShelfField.getValue());
+                predefinedShelfService.findByPredefinedShelfNameAndLoggedInUser(
+                        predefinedShelfField.getValue()
+                );
         if (shelf != null) {
             Book book = binder.getBean();
             book.setPredefinedShelf(shelf);
