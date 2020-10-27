@@ -50,17 +50,14 @@ public class Book extends BaseEntity {
     @NotNull
     @NotEmpty
     private String title;
-    @Max(value = MAX_PAGES)
-    private Integer numberOfPages;
-    @Max(value = MAX_PAGES)
-    private Integer pagesRead;
+    @Max(value = MAX_PAGES) private Integer numberOfPages;
+    @Max(value = MAX_PAGES) private Integer pagesRead;
     private BookGenre bookGenre;
     private BookFormat bookFormat;
     private Integer seriesPosition;
     private String edition;
     private String bookRecommendedBy;
-    @ISBN
-    private String isbn;
+    @ISBN private String isbn;
 
     @ManyToOne(cascade =
             {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH}
@@ -90,12 +87,11 @@ public class Book extends BaseEntity {
     )
     private Set<Tag> tags;
 
+    @JsonSerialize(using = LocalDateSerializer.class) private LocalDate dateStartedReading;
+
     // For books that have been read
     private RatingScale rating;
-    @JsonSerialize(using = LocalDateSerializer.class)
-    private LocalDate dateStartedReading;
-    @JsonSerialize(using = LocalDateSerializer.class)
-    private LocalDate dateFinishedReading;
+    @JsonSerialize(using = LocalDateSerializer.class) private LocalDate dateFinishedReading;
     private String bookReview;
 
     public Book(String title, Author author, PredefinedShelf predefinedShelf) {
