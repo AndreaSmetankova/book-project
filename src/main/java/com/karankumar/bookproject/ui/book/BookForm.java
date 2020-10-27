@@ -30,7 +30,6 @@ import com.karankumar.bookproject.backend.util.CustomShelfUtils;
 import com.karankumar.bookproject.ui.components.util.ComponentUtil;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
@@ -126,6 +125,22 @@ public class BookForm extends VerticalLayout {
             rating,
             bookReview
     };
+    private final HasValue[] allComponents = {
+        bookTitle,
+        authorFirstName,
+        authorLastName,
+        inSeriesCheckbox,
+        seriesPosition,
+        dateStartedReading,
+        dateFinishedReading,
+        bookGenre,
+        customShelfField,
+        predefinedShelfField,
+        pagesRead,
+        numberOfPages,
+        rating,
+        bookReview
+    };
 
     @VisibleForTesting Button delete = new Button();
     @VisibleForTesting Binder<Book> binder = new BeanValidationBinder<>(Book.class);
@@ -160,22 +175,8 @@ public class BookForm extends VerticalLayout {
         configureBookReviewFormField();
         configureInSeriesFormField();
         HorizontalLayout buttons = configureFormButtons();
-        HasSize[] components = {
-                bookTitle,
-                authorFirstName,
-                authorLastName,
-                seriesPosition,
-                dateStartedReading,
-                dateFinishedReading,
-                bookGenre,
-                customShelfField,
-                predefinedShelfField,
-                pagesRead,
-                numberOfPages,
-                rating,
-                bookReview
-        };
-        ComponentUtil.setComponentClassName(components, "bookFormInputField");
+
+        ComponentUtil.setComponentClassName(allComponents, "bookFormInputField");
         configureFormLayout(formLayout, buttons);
 
         add(dialog);
@@ -763,24 +764,8 @@ public class BookForm extends VerticalLayout {
     }
 
     private void clearFormFields() {
-        HasValue[] components = {
-                bookTitle,
-                authorFirstName,
-                authorLastName,
-                customShelfField,
-                predefinedShelfField,
-                inSeriesCheckbox,
-                seriesPosition,
-                bookGenre,
-                pagesRead,
-                numberOfPages,
-                dateStartedReading,
-                dateFinishedReading,
-                rating,
-                bookReview
-        };
         resetSaveButtonText();
-        ComponentUtil.clearComponentFields(components);
+        ComponentUtil.clearComponentFields(allComponents);
     }
 
     private void resetSaveButtonText() {
