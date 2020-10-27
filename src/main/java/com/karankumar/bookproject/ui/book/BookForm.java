@@ -402,7 +402,8 @@ public class BookForm extends VerticalLayout {
 
     private boolean isMovedToDifferentShelf() {
         PredefinedShelf.ShelfName shelfName = predefinedShelfField.getValue();
-        PredefinedShelf.ShelfName bookInShelf = binder.getBean().getPredefinedShelf().getPredefinedShelfName();
+        PredefinedShelf.ShelfName bookInShelf =
+                binder.getBean().getPredefinedShelf().getPredefinedShelfName();
         return !shelfName.equals(bookInShelf);
     }
 
@@ -431,70 +432,72 @@ public class BookForm extends VerticalLayout {
     }
 
     private Book populateBookBean() {
-        String title;
         if (bookTitle.getValue() == null) {
             LOGGER.log(Level.SEVERE, "Book title from form field is null");
             return null;
-        } else {
-            title = bookTitle.getValue();
         }
 
-        String firstName;
-        String lastName;
-        if (authorFirstName.getValue() != null) {
-            firstName = authorFirstName.getValue();
-        } else {
+        if (authorFirstName.getValue() == null) {
             LOGGER.log(Level.SEVERE, "Null first name");
             return null;
         }
-        if (authorLastName.getValue() != null) {
-            lastName = authorLastName.getValue();
-        } else {
+
+        if (authorLastName.getValue() == null) {
             LOGGER.log(Level.SEVERE, "Null last name");
             return null;
         }
-        Author author = new Author(firstName, lastName);
 
-        PredefinedShelf predefinedShelf;
-        if (predefinedShelfField.getValue() != null) {
-            predefinedShelf =
-                    predefinedShelfService.findByPredefinedShelfNameAndLoggedInUser(predefinedShelfField.getValue());
-        } else {
+        if (predefinedShelfField.getValue() == null) {
             LOGGER.log(Level.SEVERE, "Null shelf");
             return null;
         }
-        Book book = new Book(title, author, predefinedShelf);
 
-        if (customShelfField.getValue() != null && !customShelfField.getValue().isEmpty()) {
-            CustomShelf shelf = customShelfService.findByShelfNameAndLoggedInUser(customShelfField.getValue());
-            if (shelf != null) {
-                book.setCustomShelf(shelf);
-            }
-        }
+        Author author = new Author(authorFirstName.getValue(), authorLastName.getValue());
+        PredefinedShelf predefinedShelf;
+        predefinedShelf =
+                predefinedShelfService.findByPredefinedShelfNameAndLoggedInUser(
+                        predefinedShelfField.getValue()
+                );
 
-        if (seriesPosition.getValue() != null && seriesPosition.getValue() > 0) {
-            book.setSeriesPosition(seriesPosition.getValue());
-        } else if (seriesPosition.getValue() != null) {
-            LOGGER.log(Level.SEVERE, "Negative Series value");
-        }
+        Book book = new Book(bookTitle.getValue(), author, predefinedShelf);
 
+        book = addCustomShelfIfExists(book);
         book.setBookGenre(bookGenre.getValue());
         book.setNumberOfPages(numberOfPages.getValue());
         book.setDateStartedReading(dateStartedReading.getValue());
         book.setDateFinishedReading(dateFinishedReading.getValue());
-
-        Optional<RatingScale> ratingScale = RatingScale.of(rating.getValue());
-        ratingScale.ifPresent(book::setRating);
-
+        addRatingIfExists(book);
         book.setBookReview(bookReview.getValue());
         book.setPagesRead(pagesRead.getValue());
+        addSeriesPositionIfExists(book);
 
+        return book;
+    }
+
+    private Book addCustomShelfIfExists(Book book) {
+        if (customShelfField.getValue() != null && !customShelfField.getValue().isEmpty()) {
+            CustomShelf shelf =
+                    customShelfService.findByShelfNameAndLoggedInUser(
+                            customShelfField.getValue()
+                    );
+            if (shelf != null) {
+                book.setCustomShelf(shelf);
+            }
+        }
+        return book;
+    }
+
+    private void addRatingIfExists(Book book) {
+        Optional<RatingScale> ratingScale = RatingScale.of(rating.getValue());
+        ratingScale.ifPresent(book::setRating);
+    }
+
+    private Book addSeriesPositionIfExists(Book book) {
         if (seriesPosition.getValue() != null && seriesPosition.getValue() > 0) {
             book.setSeriesPosition(seriesPosition.getValue());
         } else if (seriesPosition.getValue() != null) {
             LOGGER.log(Level.SEVERE, "Negative Series value");
         }
-
         return book;
     }
 
