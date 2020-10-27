@@ -40,4 +40,14 @@ public final class BookFormValidators {
     static SerializablePredicate<Integer> isPagesLessThanOrEqualToMax() {
         return number -> (number == null || number <= Book.MAX_PAGES);
     }
+
+    static SerializablePredicate<LocalDate> isEndDateAfterStartDate(LocalDate dateStarted) {
+        return endDate -> {
+            if (dateStarted == null || endDate == null) {
+                // allowed since these are optional fields
+                return true;
+            }
+            return (endDate.isEqual(dateStarted) || endDate.isAfter(dateStarted));
+        };
+    }
 }

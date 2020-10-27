@@ -50,15 +50,15 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.shared.Registration;
 import lombok.extern.java.Log;
 
 import javax.transaction.NotSupportedException;
-import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.logging.Level;
+
+import static com.karankumar.bookproject.ui.book.BookFormValidators.isEndDateAfterStartDate;
 
 /**
  * A Vaadin form for adding a new @see Book.
@@ -246,48 +246,101 @@ public class BookForm extends VerticalLayout {
     }
 
     private void bindFormFields() {
+        bindBookTitleField();
+        bindAuthorFirstNameField();
+        bindAuthorLastNameField();
+        bindPredefinedShelfField();
+        bindCustomShelfField();
+        bindSeriesPositionField();
+        bindDateStartedReadingField();
+        bindDateFinishedReadingField();
+        bindNumberOfPagesField();
+        bindPagesReadField();
+        bindBookGenreField();
+        bindRatingField();
+        bindBookReviewField();
+    }
+
+    private void bindBookTitleField() {
         binder.forField(bookTitle)
               .asRequired(BookFormErrors.BOOK_TITLE_ERROR)
               .bind(Book::getTitle, Book::setTitle);
+    }
+
+    private void bindAuthorFirstNameField() {
         binder.forField(authorFirstName)
               .withValidator(BookFormValidators.isAuthorNameNonEmpty(), BookFormErrors.FIRST_NAME_ERROR)
               .bind("author.firstName");
+    }
+
+    private void bindAuthorLastNameField() {
         binder.forField(authorLastName)
               .withValidator(BookFormValidators.isAuthorNameNonEmpty(), BookFormErrors.LAST_NAME_ERROR)
               .bind("author.lastName");
+    }
+
+    private void bindPredefinedShelfField() {
         binder.forField(predefinedShelfField)
               .withValidator(Objects::nonNull, BookFormErrors.SHELF_ERROR)
               .bind("predefinedShelf.predefinedShelfName");
+    }
+
+    private void bindCustomShelfField() {
         binder.forField(customShelfField)
               .bind("customShelf.shelfName");
+    }
+
+    private void bindSeriesPositionField() {
         binder.forField(seriesPosition)
               .withValidator(BookFormValidators.isNumberPositive(),
                       BookFormErrors.SERIES_POSITION_ERROR)
               .bind(Book::getSeriesPosition, Book::setSeriesPosition);
+    }
+
+    private void bindDateStartedReadingField() {
         binder.forField(dateStartedReading)
               .withValidator(BookFormValidators.isDateNotInFuture(),
                       String.format(BookFormErrors.AFTER_TODAY_ERROR, "started"))
               .bind(Book::getDateStartedReading, Book::setDateStartedReading);
+    }
+
+    private void bindDateFinishedReadingField() {
         binder.forField(dateFinishedReading)
-              .withValidator(isEndDateAfterStartDate(), BookFormErrors.FINISH_DATE_ERROR)
+              .withValidator(isEndDateAfterStartDate(dateStartedReading.getValue()),
+                      BookFormErrors.FINISH_DATE_ERROR)
               .withValidator(BookFormValidators.isDateNotInFuture(),
                       String.format(BookFormErrors.AFTER_TODAY_ERROR, "finished"))
               .bind(Book::getDateFinishedReading, Book::setDateFinishedReading);
+    }
+
+    private void bindNumberOfPagesField() {
         binder.forField(numberOfPages)
               .withValidator(BookFormValidators.isNumberPositive(),
                       BookFormErrors.PAGE_NUMBER_ERROR)
               .withValidator(BookFormValidators.isPagesLessThanOrEqualToMax(),
                       BookFormErrors.MAX_PAGES_ERROR)
               .bind(Book::getNumberOfPages, Book::setNumberOfPages);
+    }
+
+    private void bindPagesReadField() {
         binder.forField(pagesRead)
               .withValidator(BookFormValidators.isPagesLessThanOrEqualToMax(),
                       BookFormErrors.MAX_PAGES_ERROR)
               .bind(Book::getPagesRead, Book::setPagesRead);
+    }
+
+    private void bindBookGenreField() {
         binder.forField(bookGenre)
               .bind(Book::getBookGenre, Book::setBookGenre);
+    }
+
+    private void bindRatingField() {
         binder.forField(rating)
               .withConverter(new DoubleToRatingScaleConverter())
               .bind(Book::getRating, Book::setRating);
+    }
+
+    private void bindBookReviewField() {
         binder.forField(bookReview)
               .bind(Book::getBookReview, Book::setBookReview);
     }
@@ -730,17 +783,6 @@ public class BookForm extends VerticalLayout {
     public void addBook() {
         clearFormFields();
         openForm();
-    }
-
-    private SerializablePredicate<LocalDate> isEndDateAfterStartDate() {
-        return endDate -> {
-            LocalDate dateStarted = dateStartedReading.getValue();
-            if (dateStarted == null || endDate == null) {
-                // allowed since these are optional fields
-                return true;
-            }
-            return (endDate.isEqual(dateStarted) || endDate.isAfter(dateStarted));
-        };
     }
 
     public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType,
