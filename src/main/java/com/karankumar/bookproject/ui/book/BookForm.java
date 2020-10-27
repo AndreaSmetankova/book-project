@@ -537,7 +537,6 @@ public class BookForm extends VerticalLayout {
 
         // TODO: this should be removed. A custom shelf should not be mandatory, so it should be acceptable to the custom shelf to be null
         if (book.getCustomShelf() == null) {
-//            book.setCustomShelf(new CustomShelf("ShelfName"));
             CustomShelf customShelf = customShelfService.createCustomShelf("ShelfName");
             book.setCustomShelf(customShelf);
         }
@@ -670,13 +669,15 @@ public class BookForm extends VerticalLayout {
     }
 
     /**
-     * Toggles showing the rating and the bookReview depending on which shelf this new book is going into
+     * Toggles showing the rating and the bookReview depending on which shelf this new book is
+     * going into
      *
      * @param name the name of the shelf that was selected in this book form
      * @throws NotSupportedException if the shelf name parameter does not match the name of
      *                               a @see PredefinedShelf
      */
-    private void showOrHideRatingAndBookReview(PredefinedShelf.ShelfName name) throws NotSupportedException {
+    private void showOrHideRatingAndBookReview(PredefinedShelf.ShelfName name)
+            throws NotSupportedException {
         switch (name) {
             case TO_READ:
             case READING:
@@ -694,7 +695,8 @@ public class BookForm extends VerticalLayout {
     }
 
     /**
-     * Populates the fieldsToReset array with state-specific fields depending on which shelf the book is going into
+     * Populates the fieldsToReset array with state-specific fields depending on which shelf the
+     * book is going into
      *
      * @param shelfName the name of the shelf that was selected in this book form
      * @throws NotSupportedException if the shelf name parameter does not match the name of
