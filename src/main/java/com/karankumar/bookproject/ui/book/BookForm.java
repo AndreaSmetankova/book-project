@@ -250,10 +250,10 @@ public class BookForm extends VerticalLayout {
               .asRequired(BookFormErrors.BOOK_TITLE_ERROR)
               .bind(Book::getTitle, Book::setTitle);
         binder.forField(authorFirstName)
-              .withValidator(BookFormValidators.authorPredicate(), BookFormErrors.FIRST_NAME_ERROR)
+              .withValidator(BookFormValidators.isAuthorNameNonEmpty(), BookFormErrors.FIRST_NAME_ERROR)
               .bind("author.firstName");
         binder.forField(authorLastName)
-              .withValidator(BookFormValidators.authorPredicate(), BookFormErrors.LAST_NAME_ERROR)
+              .withValidator(BookFormValidators.isAuthorNameNonEmpty(), BookFormErrors.LAST_NAME_ERROR)
               .bind("author.lastName");
         binder.forField(predefinedShelfField)
               .withValidator(Objects::nonNull, BookFormErrors.SHELF_ERROR)
@@ -261,26 +261,26 @@ public class BookForm extends VerticalLayout {
         binder.forField(customShelfField)
               .bind("customShelf.shelfName");
         binder.forField(seriesPosition)
-              .withValidator(BookFormValidators.positiveNumberPredicate(),
+              .withValidator(BookFormValidators.isNumberPositive(),
                       BookFormErrors.SERIES_POSITION_ERROR)
               .bind(Book::getSeriesPosition, Book::setSeriesPosition);
         binder.forField(dateStartedReading)
-              .withValidator(BookFormValidators.datePredicate(),
+              .withValidator(BookFormValidators.isDateNotInFuture(),
                       String.format(BookFormErrors.AFTER_TODAY_ERROR, "started"))
               .bind(Book::getDateStartedReading, Book::setDateStartedReading);
         binder.forField(dateFinishedReading)
               .withValidator(isEndDateAfterStartDate(), BookFormErrors.FINISH_DATE_ERROR)
-              .withValidator(BookFormValidators.datePredicate(),
+              .withValidator(BookFormValidators.isDateNotInFuture(),
                       String.format(BookFormErrors.AFTER_TODAY_ERROR, "finished"))
               .bind(Book::getDateFinishedReading, Book::setDateFinishedReading);
         binder.forField(numberOfPages)
-              .withValidator(BookFormValidators.positiveNumberPredicate(),
+              .withValidator(BookFormValidators.isNumberPositive(),
                       BookFormErrors.PAGE_NUMBER_ERROR)
-              .withValidator(BookFormValidators.maxPagesPredicate(),
+              .withValidator(BookFormValidators.isPagesLessThanOrEqualToMax(),
                       BookFormErrors.MAX_PAGES_ERROR)
               .bind(Book::getNumberOfPages, Book::setNumberOfPages);
         binder.forField(pagesRead)
-              .withValidator(BookFormValidators.maxPagesPredicate(),
+              .withValidator(BookFormValidators.isPagesLessThanOrEqualToMax(),
                       BookFormErrors.MAX_PAGES_ERROR)
               .bind(Book::getPagesRead, Book::setPagesRead);
         binder.forField(bookGenre)

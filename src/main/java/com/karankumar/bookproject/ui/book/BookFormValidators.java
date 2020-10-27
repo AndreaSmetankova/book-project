@@ -25,19 +25,19 @@ import java.time.LocalDate;
 public final class BookFormValidators {
     private BookFormValidators() {}
 
-    static SerializablePredicate<Integer> positiveNumberPredicate() {
+    static SerializablePredicate<Integer> isNumberPositive() {
         return number -> (number == null || number > 0);
     }
 
-    static SerializablePredicate<String> authorPredicate() {
+    static SerializablePredicate<String> isAuthorNameNonEmpty() {
         return name -> (name != null && !name.isEmpty());
     }
 
-    static SerializablePredicate<LocalDate> datePredicate() {
+    static SerializablePredicate<LocalDate> isDateNotInFuture() {
         return date -> !(date != null && date.isAfter(LocalDate.now()));
     }
 
-    static SerializablePredicate<Integer> maxPagesPredicate() {
+    static SerializablePredicate<Integer> isPagesLessThanOrEqualToMax() {
         return number -> (number == null || number <= Book.MAX_PAGES);
     }
 }
