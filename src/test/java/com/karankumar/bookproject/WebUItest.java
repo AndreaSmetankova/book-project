@@ -1,9 +1,6 @@
 package com.karankumar.bookproject;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 
@@ -13,7 +10,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-
+@DisplayName("WebUItest should")
 public class WebUItest {
     private static WebDriver driver;
     private static JavascriptExecutor executor;
