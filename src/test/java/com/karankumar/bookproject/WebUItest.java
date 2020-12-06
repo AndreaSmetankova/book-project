@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-@DisplayName("WebUItest should")
+
 public class WebUItest {
     private static WebDriver driver;
     private static JavascriptExecutor executor;
